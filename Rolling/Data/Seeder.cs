@@ -20,13 +20,31 @@ namespace Rolling.Data
             return inputs;
         }
 
-        public InputDto SetRollingDto(InputDto.AggregationDefinition aggregation, int slidingWindow, int baseValue, int count)
+        public List<Input> SeedInputsRandom(int maxValue, int count)
+        {
+            var inputs = new List<Input>();
+            Random rnd = new Random();
+
+            for (var i = 0; i < count; i++)
+            {
+                inputs.Add(new Input()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Value = rnd.Next(1, 200)
+                });
+            }
+
+            return inputs;
+        }
+
+
+        public InputDto SetRollingDto(InputDto.AggregationDefinition aggregation, int slidingWindow, List<Input> inputs)
         {
             return new InputDto()
             {
                 Aggregation = aggregation,
                 SlidingWindow = slidingWindow,
-                Inputs = SeedInputs(baseValue, count)
+                Inputs = inputs
             };
         }
     }

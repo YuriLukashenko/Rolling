@@ -5,7 +5,10 @@ using Rolling.Rolling;
 var service = new RollingService();
 var seeder = new Seeder();
 
-var rollingDto = seeder.SetRollingDto(InputDto.AggregationDefinition.Sum, 5, 100, 12);
+//var input = seeder.SeedInputs(200, 24);
+var input = seeder.SeedInputsRandom(200, 24);
+
+var rollingDto = seeder.SetRollingDto(InputDto.AggregationDefinition.Sum, 4, input);
 var outputs = service.CalculateRollingDelta(rollingDto);
 
 foreach (var output in outputs)
