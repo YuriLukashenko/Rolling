@@ -38,7 +38,7 @@ namespace Rolling.Data
         }
 
 
-        public InputDto SetRollingDto(InputDto.AggregationDefinition aggregation, int slidingWindow, List<Input> inputs)
+        public InputDto SetRollingDto(InputDto.AggregationDefinition aggregation, int? slidingWindow, List<Input> inputs)
         {
             return new InputDto()
             {

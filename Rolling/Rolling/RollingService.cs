@@ -6,10 +6,12 @@ namespace Rolling.Rolling
     {
         public IEnumerable<Output> CalculateRollingDelta(InputDto inputDto)
         {
-            var inputs = inputDto.Inputs;
             var window = inputDto.SlidingWindow;
-            var aggregation = inputDto.Aggregation;
+            if(window == null)
+                return Enumerable.Empty<Output>();
 
+            var inputs = inputDto.Inputs;
+            var aggregation = inputDto.Aggregation;
             var outputs = new List<Output>();
 
             for (var i = 0; i < inputs.Count(); i++)

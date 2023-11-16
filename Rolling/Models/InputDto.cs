@@ -6,7 +6,7 @@
 
         public IEnumerable<Input> Inputs { get; set; } = new List<Input>();
 
-        public int SlidingWindow { get; set; }
+        public int? SlidingWindow { get; set; }
 
         public AggregationDefinition Aggregation { get; set; }
     }
