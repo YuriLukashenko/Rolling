@@ -4,5 +4,6 @@
     {
         public string Id { get; set; } = string.Empty;
         public double Value { get; set; }
+        public DateTime Date { get; set; }
     }
 }
