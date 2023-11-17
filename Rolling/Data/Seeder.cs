@@ -58,7 +58,60 @@ namespace Rolling.Data
             return inputs;
         }
 
+        public IEnumerable<Input> SeedInputsFromExcel()
+        {
+            return new List<Input>()
+            {
+                new() { Id = Guid.NewGuid().ToString(), Value = 41, Date = new DateTime(2020, 1, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 25, Date = new DateTime(2020, 2, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 9, Date = new DateTime(2020, 3, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 16, Date = new DateTime(2020, 4, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 24, Date = new DateTime(2020, 5, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 68, Date = new DateTime(2020, 6, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 71, Date = new DateTime(2020, 7, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 27, Date = new DateTime(2020, 8, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 54, Date = new DateTime(2020, 9, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 24, Date = new DateTime(2020, 10, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 29, Date = new DateTime(2020, 11, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 86, Date = new DateTime(2020, 12, 1)},
 
+                new() { Id = Guid.NewGuid().ToString(), Value = 83, Date = new DateTime(2021, 1, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 53, Date = new DateTime(2021, 2, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 66, Date = new DateTime(2021, 3, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 59, Date = new DateTime(2021, 4, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 45, Date = new DateTime(2021, 5, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 51, Date = new DateTime(2021, 6, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 44, Date = new DateTime(2021, 7, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 20, Date = new DateTime(2021, 8, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 83, Date = new DateTime(2021, 9, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 12, Date = new DateTime(2021, 10, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 29, Date = new DateTime(2021, 11, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 5, Date = new DateTime(2021, 12, 1)},
+
+                new() { Id = Guid.NewGuid().ToString(), Value = 96, Date = new DateTime(2022, 1, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 45, Date = new DateTime(2022, 2, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 57, Date = new DateTime(2022, 3, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 73, Date = new DateTime(2022, 4, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 37, Date = new DateTime(2022, 5, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 42, Date = new DateTime(2022, 6, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 82, Date = new DateTime(2022, 7, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 78, Date = new DateTime(2022, 8, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 57, Date = new DateTime(2022, 9, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 35, Date = new DateTime(2022, 10, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 79, Date = new DateTime(2022, 11, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 39, Date = new DateTime(2022, 12, 1)},
+
+                new() { Id = Guid.NewGuid().ToString(), Value = 31, Date = new DateTime(2023, 1, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 90, Date = new DateTime(2023, 2, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 75, Date = new DateTime(2023, 3, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 72, Date = new DateTime(2023, 4, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 49, Date = new DateTime(2023, 5, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 32, Date = new DateTime(2023, 6, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 97, Date = new DateTime(2023, 7, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 43, Date = new DateTime(2023, 8, 1)},
+                new() { Id = Guid.NewGuid().ToString(), Value = 38, Date = new DateTime(2023, 9, 1)},
+            };
+        }
 
         public List<Input> SeedInputsRandom(int maxValue, int count)
         {
@@ -75,17 +128,6 @@ namespace Rolling.Data
             }
 
             return inputs;
-        }
-
-
-        public InputDto SetRollingDto(InputDto.AggregationDefinition aggregation, int? slidingWindow, IEnumerable<Input> inputs)
-        {
-            return new InputDto()
-            {
-                Aggregation = aggregation,
-                SlidingWindow = slidingWindow,
-                Inputs = inputs
-            };
         }
     }
 }

@@ -4,58 +4,68 @@ namespace Rolling.Rolling
 {
     public class RollingService
     {
-        public IEnumerable<Output> CalculateRollingDelta(InputDto inputDto)
+        public IEnumerable<Input> Rolling(Input.AggregationDefinition aggregation, int? slidingWindow, IEnumerable<Input> inputs)
         {
-            var window = inputDto.SlidingWindow;
-            if(window == null)
-                return Enumerable.Empty<Output>();
+            if(slidingWindow == null)
+                return Enumerable.Empty<Input>();
 
-            var inputs = inputDto.Inputs;
-            var aggregation = inputDto.Aggregation;
-            var outputs = new List<Output>();
+            var rolled = new List<Input>();
 
             for (var i = 0; i < inputs.Count(); i++)
             {
                 var temp = new List<Input>();
                 for (var j = 0; j < inputs.Count(); j++)
                 {
-                    if (j > i - window && j <= i)
+                    if (j > i - slidingWindow && j <= i)
                     {
                         temp.Add(inputs.ElementAt(j));
                     }
                 }
 
-                outputs.Add(new Output()
+                rolled.Add(new Input()
                 {
                     Id = inputs.ElementAt(i).Id,
-                    AggregatedValue = Aggregate(temp, aggregation)
+                    Date = inputs.ElementAt(i).Date,
+                    Value = inputs.ElementAt(i).Value,
+                    AggregatedValue = Aggregate(temp, aggregation),
                 });
             }
 
-            SetDeltaPercentage(outputs);
-            return outputs;
+            return rolled;
         }
 
-        private double Aggregate(IEnumerable<Input> Inputs, InputDto.AggregationDefinition aggregation)
+        private double Aggregate(IEnumerable<Input> Inputs, Input.AggregationDefinition aggregation)
         {
             switch (aggregation)
             {
-                case InputDto.AggregationDefinition.Sum:
+                case Input.AggregationDefinition.Sum:
                     return Inputs.Sum(x => x.Value);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(aggregation), aggregation, null);
             }
         }
 
-        private void SetDeltaPercentage(List<Output> outputs)
+        public List<Input> DeltaPercentage(List<Input> inputs, int window)
         {
-            for (var i = 1; i < outputs.Count(); i++)
+            var deltaPercents = new List<Input>();
+            for (var i = (window * 2) - 1; i < inputs.Count; i++)
             {
-                var result = ((outputs[i].AggregatedValue - outputs[i - 1].AggregatedValue) /
-                              outputs[i - 1].AggregatedValue) * 100;
+                var item = inputs.ElementAt(i);
 
-                outputs[i].DeltaPercentage = result;
+                var delta = ((item.AggregatedValue - inputs[i - window].AggregatedValue) /
+                              inputs[i - window].AggregatedValue) * 100;
+
+                deltaPercents.Add(new Input()
+                {
+                    Id = item.Id,
+                    Date = item.Date,
+                    Value = item.Value,
+                    AggregatedValue = item.AggregatedValue,
+                    DeltaPercentage = delta
+                });
             }
+
+            return deltaPercents;
         }
     }
 }

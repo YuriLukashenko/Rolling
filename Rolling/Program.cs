@@ -2,25 +2,40 @@
 using Rolling.Models;
 using Rolling.Rolling;
 
+var slidingWindow = 12;
+Console.WriteLine($"Sliding window: {slidingWindow}");
+
 var rolling = new RollingService();
-var sliding = new SlidingWindowService();
 var seeder = new Seeder();
 var filler = new Filler();
 
 //var input = seeder.SeedInputs(100, 24);
 //var input = seeder.SeedInputsRandom(200, 24);
 //var input = seeder.SeedInputsMonths(200, 24, new DateTime(2022, 1, 1));
-var input = seeder.SeedInputsMissingMonths(200, 24, new DateTime(2022, 1, 1));
-var filled = filler.Fill(input, Filler.BinDefinition.Month);
+//var input = seeder.SeedInputsMissingMonths(200, 24, new DateTime(2022, 1, 1));
+var input = seeder.SeedInputsFromExcel();
 
-var slidingWindow = 4;
+var ordered = input.OrderBy(x => x.Date);
+var filled = filler.Fill(ordered, Filler.BinDefinition.Month);
 
-var rollingDto = seeder.SetRollingDto(InputDto.AggregationDefinition.Sum, slidingWindow, filled);
-var outputs = rolling.CalculateRollingDelta(rollingDto);
+var rolled = rolling.Rolling(Input.AggregationDefinition.Sum, slidingWindow, filled);
 
-Console.WriteLine($"Sliding window: {slidingWindow}");
-foreach (var output in outputs)
+//var delta1Month = rolling.DeltaPercentage(rolled.ToList(), 1);
+//Console.WriteLine("---------------------------------------------------------------------------");
+//Console.WriteLine("Delta 1 month");
+//foreach (var item in delta1Month)
+//{
+//    Console.WriteLine($"Date: {item.Date}");
+//    Console.WriteLine($"Aggregated: {item.AggregatedValue}");
+//    Console.WriteLine($"DeltaPercentage: {item.DeltaPercentage}");
+//}
+
+var delta12Month = rolling.DeltaPercentage(rolled.ToList(), 12);
+Console.WriteLine("---------------------------------------------------------------------------");
+Console.WriteLine("Delta 12 month");
+foreach (var item in delta12Month)
 {
-    Console.WriteLine($"Aggregated: {output.AggregatedValue}");
-    Console.WriteLine($"DeltaPercentage: {output.DeltaPercentage}");
+    Console.WriteLine($"Date: {item.Date}");
+    Console.WriteLine($"Aggregated: {item.AggregatedValue}");
+    Console.WriteLine($"DeltaPercentage: {item.DeltaPercentage}");
 }
