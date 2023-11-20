@@ -4,6 +4,12 @@ namespace Rolling.Rolling
 {
     public class RollingService
     {
+        private readonly AggregationService _aggregationService;
+        public RollingService()
+        {
+            _aggregationService = new AggregationService();
+        }
+
         public IEnumerable<Input> Rolling(Input.AggregationDefinition aggregation, int? slidingWindow, IEnumerable<Input> inputs)
         {
             if(slidingWindow == null)
@@ -27,23 +33,14 @@ namespace Rolling.Rolling
                     Id = inputs.ElementAt(i).Id,
                     Date = inputs.ElementAt(i).Date,
                     Value = inputs.ElementAt(i).Value,
-                    AggregatedValue = Aggregate(temp, aggregation),
+                    AggregatedValue = _aggregationService.Aggregate(temp, aggregation),
                 });
             }
 
             return rolled;
         }
 
-        private double Aggregate(IEnumerable<Input> Inputs, Input.AggregationDefinition aggregation)
-        {
-            switch (aggregation)
-            {
-                case Input.AggregationDefinition.Sum:
-                    return Inputs.Sum(x => x.Value);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(aggregation), aggregation, null);
-            }
-        }
+
 
         public List<Input> DeltaPercentage(List<Input> inputs, int window)
         {
