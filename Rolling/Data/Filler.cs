@@ -11,19 +11,19 @@ namespace Rolling.Data
     {
         public enum BinDefinition { NotSet, Minute, Hour, Day, Week, Month, Quarter, Year }
 
-        public IEnumerable<Input> Fill(IEnumerable<Input> inputs, Filler.BinDefinition bin)
+        public IEnumerable<Measure> Fill(IEnumerable<Measure> measures, Filler.BinDefinition bin)
         {
             if (bin == Filler.BinDefinition.NotSet)
-                return inputs;
+                return measures;
 
-            var startDate = inputs.Min(x => x.Date).Date;
-            var endDate = inputs.Max(x => x.Date).Date;
+            var startDate = measures.Min(x => x.Date).Date;
+            var endDate = measures.Max(x => x.Date).Date;
             var dates = GetBinsBetween(startDate, endDate, bin);
 
-            var filled = dates.Select(date => new Input
+            var filled = dates.Select(date => new Measure
                 {
                     Date = date,
-                    Value = inputs.FirstOrDefault(x => x.Date == date)?.Value ?? 0
+                    Value = measures.FirstOrDefault(x => x.Date == date)?.Value ?? 0
                 });
 
             return filled;

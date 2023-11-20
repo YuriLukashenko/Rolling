@@ -1,6 +1,6 @@
 ﻿namespace Rolling.Models
 {
-    public class Input
+    public class Measure
     {
         public enum AggregationDefinition { Sum } //Avg, Min, Max ...
 

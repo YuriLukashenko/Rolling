@@ -4,13 +4,13 @@ namespace Rolling.Data
 {
     public class Seeder
     {
-        public IEnumerable<Input> SeedInputs(int baseValue, int count)
+        public IEnumerable<Measure> SeedInputs(int baseValue, int count)
         {
-            var inputs = new List<Input>();
+            var inputs = new List<Measure>();
 
             for(var i=0; i<count; i++)
             {
-                inputs.Add(new Input()
+                inputs.Add(new Measure()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Value = baseValue * (i + 1)
@@ -20,13 +20,13 @@ namespace Rolling.Data
             return inputs;
         }
 
-        public IEnumerable<Input> SeedInputsMonths(int baseValue, int count, DateTime baseDate)
+        public IEnumerable<Measure> SeedInputsMonths(int baseValue, int count, DateTime baseDate)
         {
-            var inputs = new List<Input>();
+            var inputs = new List<Measure>();
 
             for (var i = 0; i < count; i++)
             {
-                inputs.Add(new Input()
+                inputs.Add(new Measure()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Value = baseValue * (i + 1),
@@ -37,9 +37,9 @@ namespace Rolling.Data
             return inputs;
         }
 
-        public IEnumerable<Input> SeedInputsMissingMonths(int baseValue, int count, DateTime baseDate)
+        public IEnumerable<Measure> SeedInputsMissingMonths(int baseValue, int count, DateTime baseDate)
         {
-            var inputs = new List<Input>();
+            var inputs = new List<Measure>();
 
             for (var i = 0; i < count; i++)
             {
@@ -47,7 +47,7 @@ namespace Rolling.Data
                 if(i!=0 && i%5 == 0)
                     continue;
 
-                inputs.Add(new Input()
+                inputs.Add(new Measure()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Value = baseValue * (i + 1),
@@ -58,9 +58,26 @@ namespace Rolling.Data
             return inputs;
         }
 
-        public IEnumerable<Input> SeedB2B()
+        public List<Measure> SeedInputsRandom(int maxValue, int count)
         {
-            return new List<Input>()
+            var inputs = new List<Measure>();
+            Random rnd = new Random();
+
+            for (var i = 0; i < count; i++)
+            {
+                inputs.Add(new Measure()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Value = rnd.Next(1, 200)
+                });
+            }
+
+            return inputs;
+        }
+
+        public IEnumerable<Measure> SeedB2B()
+        {
+            return new List<Measure>()
             {
                 new() { Id = Guid.NewGuid().ToString(), Value = 41, Date = new DateTime(2020, 1, 1)},
                 new() { Id = Guid.NewGuid().ToString(), Value = 25, Date = new DateTime(2020, 2, 1)},
@@ -113,9 +130,9 @@ namespace Rolling.Data
             };
         }
 
-        public IEnumerable<Input> SeedB2C()
+        public IEnumerable<Measure> SeedB2C()
         {
-            return new List<Input>()
+            return new List<Measure>()
             {
                 new() { Id = Guid.NewGuid().ToString(), Value = 71, Date = new DateTime(2020, 1, 1)},
                 new() { Id = Guid.NewGuid().ToString(), Value = 98, Date = new DateTime(2020, 2, 1)},
@@ -166,24 +183,6 @@ namespace Rolling.Data
                 new() { Id = Guid.NewGuid().ToString(), Value = 96, Date = new DateTime(2023, 8, 1)},
                 new() { Id = Guid.NewGuid().ToString(), Value = 26, Date = new DateTime(2023, 9, 1)},
             };
-        }
-
-
-        public List<Input> SeedInputsRandom(int maxValue, int count)
-        {
-            var inputs = new List<Input>();
-            Random rnd = new Random();
-
-            for (var i = 0; i < count; i++)
-            {
-                inputs.Add(new Input()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Value = rnd.Next(1, 200)
-                });
-            }
-
-            return inputs;
         }
     }
 }

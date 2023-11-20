@@ -10,29 +10,29 @@ namespace Rolling.Rolling
             _aggregationService = new AggregationService();
         }
 
-        public IEnumerable<Input> Rolling(Input.AggregationDefinition aggregation, int? slidingWindow, IEnumerable<Input> inputs)
+        public IEnumerable<Measure> Rolling(Measure.AggregationDefinition aggregation, int? slidingWindow, IEnumerable<Measure> measures)
         {
             if(slidingWindow == null)
-                return Enumerable.Empty<Input>();
+                return Enumerable.Empty<Measure>();
 
-            var rolled = new List<Input>();
+            var rolled = new List<Measure>();
 
-            for (var i = 0; i < inputs.Count(); i++)
+            for (var i = 0; i < measures.Count(); i++)
             {
-                var temp = new List<Input>();
-                for (var j = 0; j < inputs.Count(); j++)
+                var temp = new List<Measure>();
+                for (var j = 0; j < measures.Count(); j++)
                 {
                     if (j > i - slidingWindow && j <= i)
                     {
-                        temp.Add(inputs.ElementAt(j));
+                        temp.Add(measures.ElementAt(j));
                     }
                 }
 
-                rolled.Add(new Input()
+                rolled.Add(new Measure()
                 {
-                    Id = inputs.ElementAt(i).Id,
-                    Date = inputs.ElementAt(i).Date,
-                    Value = inputs.ElementAt(i).Value,
+                    Id = measures.ElementAt(i).Id,
+                    Date = measures.ElementAt(i).Date,
+                    Value = measures.ElementAt(i).Value,
                     AggregatedValue = _aggregationService.Aggregate(temp, aggregation),
                 });
             }
@@ -42,17 +42,17 @@ namespace Rolling.Rolling
 
 
 
-        public List<Input> DeltaPercentage(List<Input> inputs, int window)
+        public List<Measure> DeltaPercentage(List<Measure> measures, int window)
         {
-            var deltaPercents = new List<Input>();
-            for (var i = (window * 2) - 1; i < inputs.Count; i++)
+            var deltaPercents = new List<Measure>();
+            for (var i = (window * 2) - 1; i < measures.Count; i++)
             {
-                var item = inputs.ElementAt(i);
+                var item = measures.ElementAt(i);
 
-                var delta = ((item.AggregatedValue - inputs[i - window].AggregatedValue) /
-                              inputs[i - window].AggregatedValue) * 100;
+                var delta = ((item.AggregatedValue - measures[i - window].AggregatedValue) /
+                             measures[i - window].AggregatedValue) * 100;
 
-                deltaPercents.Add(new Input()
+                deltaPercents.Add(new Measure()
                 {
                     Id = item.Id,
                     Date = item.Date,

@@ -9,14 +9,14 @@ namespace Rolling.Rolling
 {
     public class AggregationService
     {
-        public IEnumerable<Input> YearAggregate(Input.AggregationDefinition aggregation, IEnumerable<Input> inputs)
+        public IEnumerable<Measure> YearAggregate(Measure.AggregationDefinition aggregation, IEnumerable<Measure> measures)
         {
-            var result = new List<Input>();
-            var yearGrouped = inputs.GroupBy(x => x.Date.Year);
+            var result = new List<Measure>();
+            var yearGrouped = measures.GroupBy(x => x.Date.Year);
 
             foreach (var group in yearGrouped)
             {
-                result.Add(new Input()
+                result.Add(new Measure()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Date = new DateTime(group.FirstOrDefault()!.Date.Year, 1, 1),
@@ -27,12 +27,12 @@ namespace Rolling.Rolling
             return result;
         }
 
-        public double Aggregate(IEnumerable<Input> Inputs, Input.AggregationDefinition aggregation)
+        public double Aggregate(IEnumerable<Measure> measures, Measure.AggregationDefinition aggregation)
         {
             switch (aggregation)
             {
-                case Input.AggregationDefinition.Sum:
-                    return Inputs.Sum(x => x.Value);
+                case Measure.AggregationDefinition.Sum:
+                    return measures.Sum(x => x.Value);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(aggregation), aggregation, null);
             }
