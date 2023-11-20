@@ -1,9 +1,4 @@
 ﻿using Rolling.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rolling.Rolling
 {
@@ -33,6 +28,12 @@ namespace Rolling.Rolling
             {
                 case Measure.AggregationDefinition.Sum:
                     return measures.Sum(x => x.Value);
+                case Measure.AggregationDefinition.Avg:
+                    return measures.Average(x => x.Value);
+                case Measure.AggregationDefinition.Min:
+                    return measures.Min(x => x.Value);
+                case Measure.AggregationDefinition.Max:
+                    return measures.Max(x => x.Value);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(aggregation), aggregation, null);
             }

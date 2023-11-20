@@ -2,7 +2,7 @@
 {
     public class Measure
     {
-        public enum AggregationDefinition { Sum } //Avg, Min, Max ...
+        public enum AggregationDefinition { Sum, Avg, Min, Max} 
 
         public string Id { get; set; } = string.Empty;
         public double Value { get; set; }

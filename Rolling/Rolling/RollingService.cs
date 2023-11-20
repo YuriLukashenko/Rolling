@@ -42,10 +42,10 @@ namespace Rolling.Rolling
 
 
 
-        public List<Measure> DeltaPercentage(List<Measure> measures, int window)
+        public List<Measure> DeltaPercentage(List<Measure> measures, int window, int start = 0)
         {
             var deltaPercents = new List<Measure>();
-            for (var i = (window * 2) - 1; i < measures.Count; i++)
+            for (var i = start + window; i < measures.Count; i++)
             {
                 var item = measures.ElementAt(i);
 
