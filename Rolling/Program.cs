@@ -1,14 +1,10 @@
 ﻿using Rolling.Data;
-using Rolling.Models;
-using Rolling.Rolling;
 
 var slidingWindow = 12;
 Console.WriteLine($"Sliding window: {slidingWindow}");
 
-var rolling = new RollingService();
 var seeder = new Seeder();
-var filler = new Filler();
-var aggregator = new AggregationService();
+var runner = new TestRunner();
 
 //var input = seeder.SeedInputs(100, 24);
 //var input = seeder.SeedInputsRandom(200, 24);
@@ -16,27 +12,7 @@ var aggregator = new AggregationService();
 //var input = seeder.SeedInputsMissingMonths(200, 24, new DateTime(2022, 1, 1));
 
 var measuresB2B = seeder.SeedB2B().OrderBy(x => x.Date);
-var filled = filler.Fill(measuresB2B, Filler.BinDefinition.Month);
-
-var monthAggregated = filled.Select(x => x.SetAggregatedValue(x.Value));
-var monthDelta = rolling.DeltaPercentage(monthAggregated.ToList(), 12);
-Printer.Print(monthDelta, "Monthly change (year over year) B2B:");
-
-var rolled = rolling.Rolling(Measure.AggregationDefinition.Sum, slidingWindow, filled);
-var yearly = aggregator.YearAggregate(Measure.AggregationDefinition.Sum, filled);
-
-var delta1Month = rolling.DeltaPercentage(rolled.ToList(), 1);
-Printer.Print(delta1Month, "Delta 1 month B2B:");
-
-var rolling12MonthsB2B = rolling.DeltaPercentage(rolled.ToList(), 12, 11);
-Printer.Print(rolling12MonthsB2B, "Rolling 12 months B2B:");
-
-var yearlyB2B = rolling.DeltaPercentage(yearly.ToList(), 1);
-Printer.Print(yearlyB2B, "Årsutveckling");
+runner.Run(measuresB2B, "B2B", slidingWindow);
 
 var measuresB2C = seeder.SeedB2C().OrderBy(x => x.Date);
-var filled2 = filler.Fill(measuresB2C, Filler.BinDefinition.Month);
-var rolled2 = rolling.Rolling(Measure.AggregationDefinition.Sum, slidingWindow, filled2);
-
-var rolling12MonthsB2C = rolling.DeltaPercentage(rolled2.ToList(), 12, 11);
-Printer.Print(rolling12MonthsB2C, "Rolling");
+runner.Run(measuresB2C, "B2C", slidingWindow);

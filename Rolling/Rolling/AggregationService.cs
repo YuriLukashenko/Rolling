@@ -22,6 +22,24 @@ namespace Rolling.Rolling
             return result;
         }
 
+        public IEnumerable<Measure> QuarterAggregate(Measure.AggregationDefinition aggregation, IEnumerable<Measure> measures)
+        {
+            var result = new List<Measure>();
+            var quarterGrouped = measures.GroupBy(x => new { x.Date.Year, Quarter = (x.Date.Month - 1) / 3 });
+
+            foreach (var group in quarterGrouped)
+            {
+                result.Add(new Measure()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Date = new DateTime(group.FirstOrDefault()!.Date.Year, group.Key.Quarter * 3 + 1, 1),
+                    AggregatedValue = Aggregate(group, aggregation),
+                });
+            }
+
+            return result;
+        }
+
         public double Aggregate(IEnumerable<Measure> measures, Measure.AggregationDefinition aggregation)
         {
             switch (aggregation)

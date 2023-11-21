@@ -40,6 +40,35 @@ namespace Rolling.Rolling
             return rolled;
         }
 
+        public IEnumerable<Measure> Accumulated(Measure.AggregationDefinition aggregation, int? slidingWindow, IEnumerable<Measure> measures)
+        {
+            if (slidingWindow == null)
+                return Enumerable.Empty<Measure>();
+
+            var accumulated = new List<Measure>();
+
+            for (var i = 0; i < measures.Count(); i++)
+            {
+                var temp = new List<Measure>();
+                for (var j = 0; j < measures.Count(); j++)
+                {
+                    if (j >= i - (i % slidingWindow) && j <= i)
+                    {
+                        temp.Add(measures.ElementAt(j));
+                    }
+                }
+
+                accumulated.Add(new Measure()
+                {
+                    Id = measures.ElementAt(i).Id,
+                    Date = measures.ElementAt(i).Date,
+                    Value = measures.ElementAt(i).Value,
+                    AggregatedValue = _aggregationService.Aggregate(temp, aggregation),
+                });
+            }
+
+            return accumulated;
+        }
 
 
         public List<Measure> DeltaPercentage(List<Measure> measures, int window, int start = 0)
