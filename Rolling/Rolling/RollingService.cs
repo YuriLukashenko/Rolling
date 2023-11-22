@@ -11,7 +11,7 @@ namespace Rolling.Rolling
             _aggregationService = new AggregationService();
         }
 
-        public IEnumerable<Measure> Rolling(Measure.AggregationDefinition aggregation, int? slidingWindow, IEnumerable<Measure> measures)
+        public IEnumerable<Measure> Rolling(IEnumerable<Measure> measures, int? slidingWindow)
         {
             if(slidingWindow == null)
                 return Enumerable.Empty<Measure>();
@@ -35,14 +35,13 @@ namespace Rolling.Rolling
                     Date = measures.ElementAt(i).Date,
                     Value = measures.ElementAt(i).Value,
                     BunchValues = temp.Select(x => x.Value),
-                    AggregatedValue = _aggregationService.Aggregate(temp, aggregation),
                 });
             }
 
             return rolled;
         }
 
-        public IEnumerable<Measure> Accumulated(Measure.AggregationDefinition aggregation, int? slidingWindow, IEnumerable<Measure> measures)
+        public IEnumerable<Measure> Accumulated(IEnumerable<Measure> measures, int? slidingWindow)
         {
             if (slidingWindow == null)
                 return Enumerable.Empty<Measure>();
@@ -66,7 +65,6 @@ namespace Rolling.Rolling
                     Date = measures.ElementAt(i).Date,
                     Value = measures.ElementAt(i).Value,
                     BunchValues = temp.Select(x => x.Value),
-                    AggregatedValue = _aggregationService.Aggregate(temp, aggregation),
                 });
             }
 

@@ -31,35 +31,47 @@ namespace Rolling.Data
 
         public void RunMonthData(IEnumerable<Measure> filled, string title)
         {
-            var aggregated = filled.Select(x => x.SetAggregatedValue(x.Value));
+            var aggregated = _aggregationService
+                .Monthize(filled)
+                .SetAggregations(Measure.AggregationDefinition.Sum);
+
             var delta = _rollingService.DeltaPercentage(aggregated.ToList(), 12);
             Printer.Print(delta, $"Monthly change (year over year) {title}:");
         }
 
         public void RunQuarterData(IEnumerable<Measure> filled, string title)
         {
-            var aggregated = _aggregationService.QuarterAggregate(Measure.AggregationDefinition.Sum, filled);
+            var aggregated = _aggregationService
+                .Quarterize(filled)
+                .SetAggregations(Measure.AggregationDefinition.Sum);
+
             var delta = _rollingService.DeltaPercentage(aggregated.ToList(), 4);
             Printer.Print(delta, $"Kvartalsutveckling {title}:");
         }
 
         public void RunRolling(IEnumerable<Measure> filled, string title, int slidingWindow, int deltaWindow, int start = 0)
         {
-            var rolled = _rollingService.Rolling(Measure.AggregationDefinition.Sum, slidingWindow, filled);
+            var rolled = _rollingService
+                .Rolling(filled, slidingWindow)
+                .SetAggregations(Measure.AggregationDefinition.Sum);
+
             var delta = _rollingService.DeltaPercentage(rolled.ToList(), deltaWindow, start);
             Printer.Print(delta, $"Delta Rolling {deltaWindow} month {title}:");
         }
 
         public void RunAccumulated(IEnumerable<Measure> filled, string title, int slidingWindow, int deltaWindow, int start = 0)
         {
-            var accumulated = _rollingService.Accumulated(Measure.AggregationDefinition.Sum, slidingWindow, filled);
+            var accumulated = _rollingService
+                .Accumulated(filled, slidingWindow)
+                .SetAggregations(Measure.AggregationDefinition.Sum);
+
             var delta = _rollingService.DeltaPercentage(accumulated.ToList(), deltaWindow, start);
             Printer.Print(delta, $"Delta Accumulated {deltaWindow} month {title}:");
         }
 
         public void RunYear(IEnumerable<Measure> filled, string title)
         {
-            var yearly = _aggregationService.YearAggregate(Measure.AggregationDefinition.Sum, filled);
+            var yearly = _aggregationService.Yearize(filled);
             var delta = _rollingService.DeltaPercentageSpecific(yearly.ToList(), Measure.AggregationDefinition.Sum);
             Printer.Print(delta, $"Årsutveckling {title}");
         }

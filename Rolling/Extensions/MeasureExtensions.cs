@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rolling.Models;
+﻿using Rolling.Models;
+using Rolling.Rolling;
 
 namespace Rolling.Extensions
 {
@@ -13,6 +9,17 @@ namespace Rolling.Extensions
         {
             measure.AggregatedValue = aggregatedValue;
             return measure;
+        }
+
+        public static IEnumerable<Measure> SetAggregations(this IEnumerable<Measure> measures, Measure.AggregationDefinition aggregation)
+        {
+            var aggregationService = new AggregationService();
+            foreach (var measure in measures)
+            {
+                measure.AggregatedValue = aggregationService.Aggregate(measure.BunchValues, aggregation);
+            }
+
+            return measures;
         }
     }
 }
