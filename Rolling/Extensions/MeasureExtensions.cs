@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rolling.Models;
 
-namespace Rolling.Models
+namespace Rolling.Extensions
 {
     public static class MeasureExtensions
     {

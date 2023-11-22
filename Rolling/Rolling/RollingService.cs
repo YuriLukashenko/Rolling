@@ -1,4 +1,5 @@
-﻿using Rolling.Models;
+﻿using Rolling.Extensions;
+using Rolling.Models;
 
 namespace Rolling.Rolling
 {
@@ -33,6 +34,7 @@ namespace Rolling.Rolling
                     Id = measures.ElementAt(i).Id,
                     Date = measures.ElementAt(i).Date,
                     Value = measures.ElementAt(i).Value,
+                    BunchValues = temp.Select(x => x.Value),
                     AggregatedValue = _aggregationService.Aggregate(temp, aggregation),
                 });
             }
@@ -63,6 +65,7 @@ namespace Rolling.Rolling
                     Id = measures.ElementAt(i).Id,
                     Date = measures.ElementAt(i).Date,
                     Value = measures.ElementAt(i).Value,
+                    BunchValues = temp.Select(x => x.Value),
                     AggregatedValue = _aggregationService.Aggregate(temp, aggregation),
                 });
             }
@@ -71,22 +74,50 @@ namespace Rolling.Rolling
         }
 
 
-        public List<Measure> DeltaPercentage(List<Measure> measures, int window, int start = 0)
+        public IEnumerable<Measure> DeltaPercentage(IEnumerable<Measure> measures, int window, int start = 0)
         {
             var deltaPercents = new List<Measure>();
-            for (var i = start + window; i < measures.Count; i++)
+            for (var i = start + window; i < measures.Count(); i++)
             {
-                var item = measures.ElementAt(i);
+                var thisItem = measures.ElementAt(i);
+                var prevItem = measures.ElementAt(i - window);
+                var thisValue = thisItem.AggregatedValue;
+                var prevValue = prevItem.AggregatedValue;
 
-                var delta = ((item.AggregatedValue - measures[i - window].AggregatedValue) /
-                             measures[i - window].AggregatedValue) * 100;
+                var delta = ((thisValue - prevValue) / prevValue) * 100;
 
                 deltaPercents.Add(new Measure()
                 {
-                    Id = item.Id,
-                    Date = item.Date,
-                    Value = item.Value,
-                    AggregatedValue = item.AggregatedValue,
+                    Id = thisItem.Id,
+                    Date = thisItem.Date,
+                    Value = thisItem.Value,
+                    AggregatedValue = thisItem.AggregatedValue,
+                    DeltaPercentage = delta
+                });
+            }
+
+            return deltaPercents;
+        }
+
+        public IEnumerable<Measure> DeltaPercentageSpecific(IEnumerable<Measure> measures, Measure.AggregationDefinition aggregation)
+        {
+            var deltaPercents = new List<Measure>();
+            for (var i = 1; i < measures.Count(); i++)
+            {
+                var thisItem = measures.ElementAt(i);
+                var prevItem = measures.ElementAt(i - 1);
+                var thisCount = thisItem.BunchValues.Count();
+                var thisValue = _aggregationService.Aggregate(thisItem.BunchValues.Take(thisCount), aggregation);
+                var prevValue = _aggregationService.Aggregate(prevItem.BunchValues.Take(thisCount), aggregation);
+
+                var delta = ((thisValue - prevValue) / prevValue) * 100;
+
+                deltaPercents.Add(new Measure()
+                {
+                    Id = thisItem.Id,
+                    Date = thisItem.Date,
+                    Value = thisItem.Value,
+                    AggregatedValue = thisValue,
                     DeltaPercentage = delta
                 });
             }

@@ -1,25 +1,18 @@
 ﻿using Rolling.Rolling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rolling.Models;
-using System.Collections;
+using Rolling.Extensions;
 
 namespace Rolling.Data
 {
     public class TestRunner
     {
         private readonly RollingService _rollingService;
-        private readonly Seeder _seeder;
         private readonly Filler _filler;
         private readonly AggregationService _aggregationService;
 
         public TestRunner()
         {
             _rollingService = new RollingService();
-            _seeder = new Seeder();
             _filler = new Filler();
             _aggregationService = new AggregationService();
         }
@@ -67,8 +60,8 @@ namespace Rolling.Data
         public void RunYear(IEnumerable<Measure> filled, string title)
         {
             var yearly = _aggregationService.YearAggregate(Measure.AggregationDefinition.Sum, filled);
-            var yearlyB2B = _rollingService.DeltaPercentage(yearly.ToList(), 1);
-            Printer.Print(yearlyB2B, $"Årsutveckling {title}");
+            var delta = _rollingService.DeltaPercentageSpecific(yearly.ToList(), Measure.AggregationDefinition.Sum);
+            Printer.Print(delta, $"Årsutveckling {title}");
         }
     }
 }

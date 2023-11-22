@@ -15,6 +15,7 @@ namespace Rolling.Rolling
                 {
                     Id = Guid.NewGuid().ToString(),
                     Date = new DateTime(group.FirstOrDefault()!.Date.Year, 1, 1),
+                    BunchValues = group.Select(x => x.Value).ToList(),
                     AggregatedValue = Aggregate(group, aggregation),
                 });
             }
@@ -33,6 +34,7 @@ namespace Rolling.Rolling
                 {
                     Id = Guid.NewGuid().ToString(),
                     Date = new DateTime(group.FirstOrDefault()!.Date.Year, group.Key.Quarter * 3 + 1, 1),
+                    BunchValues = group.Select(x => x.Value).ToList(),
                     AggregatedValue = Aggregate(group, aggregation),
                 });
             }
@@ -52,6 +54,23 @@ namespace Rolling.Rolling
                     return measures.Min(x => x.Value);
                 case Measure.AggregationDefinition.Max:
                     return measures.Max(x => x.Value);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(aggregation), aggregation, null);
+            }
+        }
+
+        public double Aggregate(IEnumerable<double> measures, Measure.AggregationDefinition aggregation)
+        {
+            switch (aggregation)
+            {
+                case Measure.AggregationDefinition.Sum:
+                    return measures.Sum();
+                case Measure.AggregationDefinition.Avg:
+                    return measures.Average();
+                case Measure.AggregationDefinition.Min:
+                    return measures.Min();
+                case Measure.AggregationDefinition.Max:
+                    return measures.Max();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(aggregation), aggregation, null);
             }
