@@ -28,7 +28,8 @@ namespace Rolling.Rolling
                     Date = thisItem.Date,
                     Value = thisItem.Value,
                     AggregatedValue = thisItem.AggregatedValue,
-                    DeltaPercentage = delta
+                    DeltaPercentage = prevValue == 0.0 ? null : delta,
+                    Error = prevValue == 0.0 ? "Divide be zero": null 
                 });
             }
 
@@ -54,7 +55,8 @@ namespace Rolling.Rolling
                     Date = thisItem.Date,
                     Value = thisItem.Value,
                     AggregatedValue = thisValue,
-                    DeltaPercentage = delta
+                    DeltaPercentage = prevValue == 0.0 ? null : delta,
+                    Error = prevValue == 0.0 ? "Divide be zero" : null
                 });
             }
 

@@ -1,14 +1,13 @@
-﻿using Rolling.Models;
+﻿using Rolling.Extensions;
+using Rolling.Models;
 
 namespace Rolling.Data
 {
     public class Filler
     {
-        public enum BinDefinition { NotSet, Minute, Hour, Day, Week, Month, Quarter, Year }
-
-        public IEnumerable<Measure> Fill(IEnumerable<Measure> measures, Filler.BinDefinition bin)
+        public IEnumerable<Measure> Fill(IEnumerable<Measure> measures, Enums.BinDefinition bin)
         {
-            if (bin == Filler.BinDefinition.NotSet)
+            if (bin == Enums.BinDefinition.NotSet)
                 return measures;
 
             var startDate = measures.Min(x => x.Date).Date;
@@ -24,7 +23,7 @@ namespace Rolling.Data
             return filled;
         }
 
-        static List<DateTime> GetBinsBetween(DateTime startDate, DateTime endDate, Filler.BinDefinition bin)
+        static List<DateTime> GetBinsBetween(DateTime startDate, DateTime endDate, Enums.BinDefinition bin)
         {
             var months = new List<DateTime>();
             for (var date = startDate; date <= endDate; date = Increment(date, bin))
@@ -35,26 +34,24 @@ namespace Rolling.Data
             return months;
         }
 
-        public static DateTime Increment(DateTime date, Filler.BinDefinition bin)
+        public static DateTime Increment(DateTime date, Enums.BinDefinition bin)
         {
             switch (bin)
             {
-                case Filler.BinDefinition.NotSet:
-                    return date;
-                case Filler.BinDefinition.Minute:
-                    return date;
-                case Filler.BinDefinition.Hour:
-                    return date;
-                case Filler.BinDefinition.Day:
-                    return date;
-                case Filler.BinDefinition.Week:
-                    return date;
-                case Filler.BinDefinition.Month:
+                case Enums.BinDefinition.Minute:
+                    return date.AddMinutes(1);
+                case Enums.BinDefinition.Hour:
+                    return date.AddHours(1);
+                case Enums.BinDefinition.Day:
+                    return date.AddDays(1);
+                case Enums.BinDefinition.Week:
+                    return date.AddWeeks(1);
+                case Enums.BinDefinition.Month:
                     return date.AddMonths(1);
-                case Filler.BinDefinition.Quarter:
-                    return date;
-                case Filler.BinDefinition.Year:
-                    return date;
+                case Enums.BinDefinition.Quarter:
+                    return date.AddQuarters(1);
+                case Enums.BinDefinition.Year:
+                    return date.AddYears(1);
                 default:
                     return date;
             }

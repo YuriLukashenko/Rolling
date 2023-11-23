@@ -1,4 +1,5 @@
 ﻿using Rolling.Models;
+using System;
 
 namespace Rolling.Data
 {
@@ -13,6 +14,12 @@ namespace Rolling.Data
                 Console.WriteLine($"Date: {item.Date}");
                 Console.WriteLine($"Aggregated: {item.AggregatedValue}");
                 Console.WriteLine($"DeltaPercentage: {item.DeltaPercentage}");
+                if (!string.IsNullOrEmpty(item.Error))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Error: {item.Error}");
+                    Console.ResetColor();
+                }
             }
         }
     }

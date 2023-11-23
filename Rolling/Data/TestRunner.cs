@@ -19,16 +19,37 @@ namespace Rolling.Data
             _deltaService = new DeltaService();
         }
 
-        public void Run(IEnumerable<Measure> inputMeasures, string title, int slidingWindow)
+        public IEnumerable<Enums.TestDefinition> GetAllTests()
         {
-            var filled = _filler.Fill(inputMeasures, Filler.BinDefinition.Month);
-            
-            RunMonthData(filled, title);
-            //RunRollingDelta(filled, title, slidingWindow, 1, 0);
-            RunAccumulated(filled, title, slidingWindow, 12);
-            RunRolling(filled, title, slidingWindow, 12, 11);
-            RunQuarterData(filled, title);
-            RunYear(filled, title);
+            return Enum.GetValues(typeof(Enums.TestDefinition)).Cast<Enums.TestDefinition>();
+        }
+
+        public void Run(IEnumerable<Measure> inputMeasures, string title, int slidingWindow, IEnumerable<Enums.TestDefinition> tests)
+        {
+            var filled = _filler.Fill(inputMeasures, Enums.BinDefinition.Month);
+
+            foreach (var test in tests)
+            {
+                switch (test)
+                {
+                    case Enums.TestDefinition.Month:
+                        RunMonthData(filled, title);
+                        break;
+                    case Enums.TestDefinition.Accumulated:
+                        RunAccumulated(filled, title, slidingWindow, 12);
+                        break;
+                    case Enums.TestDefinition.Rolling:
+                        //RunRolling(filled, title, slidingWindow, 1, 0);
+                        RunRolling(filled, title, slidingWindow, 12, 11);
+                        break;
+                    case Enums.TestDefinition.Quarter:
+                        RunQuarterData(filled, title);
+                        break;
+                    case Enums.TestDefinition.YearByLastDate:
+                        RunYear(filled, title);
+                        break;
+                }
+            }
         }
 
         public void RunMonthData(IEnumerable<Measure> filled, string title)

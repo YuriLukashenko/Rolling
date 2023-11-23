@@ -10,5 +10,6 @@
         public double AggregatedValue { get; set; }
         public double? DeltaPercentage { get; set; }
         public DateTime Date { get; set; }
+        public string? Error { get; set; }
     }
 }
