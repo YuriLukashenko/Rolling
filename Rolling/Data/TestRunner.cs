@@ -75,7 +75,7 @@ namespace Rolling.Data
         public void RunRolling(IEnumerable<Measure> filled, string title, int slidingWindow, int deltaWindow, int start = 0)
         {
             var rolled = _rollingService
-                .Rolling(filled, slidingWindow)
+                .Rolling(filled.ToArray(), slidingWindow)
                 .SetAggregations(Measure.AggregationDefinition.Sum);
 
             var delta = _deltaService.DeltaPercentage(rolled.ToList(), deltaWindow, start);
@@ -85,7 +85,7 @@ namespace Rolling.Data
         public void RunAccumulated(IEnumerable<Measure> filled, string title, int slidingWindow, int deltaWindow, int start = 0)
         {
             var accumulated = _rollingService
-                .Accumulated(filled, slidingWindow)
+                .Accumulated(filled.ToArray(), slidingWindow)
                 .SetAggregations(Measure.AggregationDefinition.Sum);
 
             var delta = _deltaService.DeltaPercentage(accumulated.ToList(), deltaWindow, start);
