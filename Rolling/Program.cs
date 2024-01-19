@@ -21,4 +21,4 @@ var runner = new TestRunner();
 //runner.Run(missing, "MissingMonths", 4, runner.GetAllTests());
 
 
-new PivotService().Run();
+new PivotService().RunWithLinqExtension();
